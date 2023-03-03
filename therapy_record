@@ -1,0 +1,70 @@
+from tkinter import *
+import json
+import datetime
+# data collector for treating therapy goals #
+today = datetime.datetime.today().strftime('%-m/%-d/%Y')
+def save():
+    student = website_entry.get()
+    time = time_entry.get()
+    goal = goal_entry.get()
+    date = date_entry.get()
+    note = note_entry.get()
+    new_data = {
+        student: {
+            "student": student,
+            "time": time,
+            "date": date,
+            "goal": goal,
+            "note": note,
+        }
+    }
+
+
+    try:
+        with open("data1.json", "r") as data_file:
+            data = json.load(data_file)
+    except FileNotFoundError:
+        with open("data1.json", "w") as data_file:
+            json.dump(new_data, data_file, indent=4)
+    else:
+        data.update(new_data)
+        with open("data1.json", "w") as data_file:
+            json.dump(data, data_file, indent=4)
+    finally:
+        student_entry.delete(0, END)
+        goal_entry.delete(0, END)
+        note_entry.delete(0, END)
+
+window = Tk()
+window.title("therapy Manager")
+window.config(padx=50, pady=50)
+
+student_label = Label(text="student:")
+student_label.grid(row=1, column=0)
+email_label = Label(text="date:")
+email_label.grid(row=2, column=0)
+goal_label = Label(text="goals:")
+goal_label.grid(row=3, column=0)
+note_label = Label(text="note:")
+note_label.grid(row=4, column=0)
+time_label = Label(text="time:")
+time_label.grid(row=5, column=0)
+
+
+student_entry = Entry(width=35)
+student_entry.grid(row=1, column=1, columnspan=2)
+student_entry.focus()
+date_entry = Entry(width=35)
+date_entry.grid(row=2, column=1, columnspan=2)
+date_entry.insert(0, today)
+goal_entry = Entry(width=35)
+goal_entry.grid(row=3, column=1)
+note_entry = Entry(width=35)
+note_entry.grid(row=4, column=1)
+time_entry = Entry(width=35)
+time_entry.grid(row=5, column=1, rowspan=6, columnspan=3)
+
+add_button = Button(text="Add", width=20, command=save)
+add_button.grid(row=9, column=5)
+
+window.mainloop()
